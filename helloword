@@ -1,5 +1,0 @@
-
-public class hello word (String args[]){
-      System.out.print("hello word");
-
-}
