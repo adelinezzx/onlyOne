@@ -1,0 +1,65 @@
+
+
+//测试  ServerSocket  和 Socket  的关系   来反应服务器和客户端的  联系
+
+//服务器的测试类
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class Server1 {
+	
+	public static void main(String[] args) throws IOException {
+		//监听的端口
+		ServerSocket  ss = new ServerSocket(8888);
+		
+		System.out.println("服务器启动了   正在监听 8888端口 " );
+		
+		while(true){
+			Socket  s = ss.accept();//注意阻塞式的
+			System.out.println(s.getInetAddress()  +  "连接上来了 ");
+			//读取客服发过来的数据
+			
+			DataInputStream  dis = new  DataInputStream(s.getInputStream());
+			System.out.println(dis.readUTF());
+			
+			dis.close();
+			s.close();
+		}
+	}
+
+}
+
+//客户端的测试类
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+public class Client1 {
+	public static void main(String[] args) throws UnknownHostException, IOException {
+		                                           //服务器地址 ，端口
+		Socket  s = new Socket("localhost",8888);
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		OutputStream  oos= s.getOutputStream() ;
+		DataOutputStream  dos = new DataOutputStream(oos);
+		dos.writeUTF("hello   adeline ");
+		
+		dos.flush();
+		dos.close();
+		s.close();
+	}
+	
+
+}
+
+
+ 

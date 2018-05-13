@@ -1,0 +1,77 @@
+
+使用Socket和 ServerSocket  来实现简单的 客户端和服务器的对话
+客户端的类
+public class TestClinent3 {
+	
+	public static void main(String[] args) throws UnknownHostException, IOException {
+		Scanner   sc = new Scanner(System.in) ;
+		//初始化Socket()构造函数（IP地址，端口）
+		Socket  s = new Socket("192.168.14.5",8888);
+		
+		System.out.println("连接服务器成功！");
+	//通讯方式：DataInputStream 和DataOutputStream
+		DataInputStream  dis = new DataInputStream(s.getInputStream() ) ;
+		
+		DataOutputStream  dos = new DataOutputStream( s.getOutputStream() ) ;
+		
+		System.out.println("请输入你要对服务器说的话： " );
+		
+		String line = sc.nextLine() ;
+		
+		while(   !line.equals("bye")     ){
+			dos.writeUTF(line);
+			dos.flush();//重点
+			
+			String response = dis.readUTF() ;
+			System.out.println("服务器说：" + response );
+			
+			if("quit" .equals(response)){
+				System.out.println("服务器要求退出 ");
+				break ;
+				
+			}
+			System.out.println("请输入你要对服务器说的话： " );
+			line = sc.nextLine() ;
+		}
+		
+		dos.writeUTF("bye");
+	    dos.flush();
+		System.out.println("服务器退出  ");
+		
+		dos.close();
+		s.close();
+	}
+
+}
+
+服务器的类
+public class TestServer3 {
+	public static void main(String[] args) throws IOException {
+		Scanner   sc  =  new Scanner(System.in) ;
+	  //初始化ServerSocket的构造函数（端口）
+		ServerSocket  ss = new ServerSocket(8888);
+		
+		boolean flag= true ;
+		while(flag){
+			Socket s = ss.accept() ;
+			System.out.println("客户端" + s.getRemoteSocketAddress() + "连接上来了");
+			DataInputStream  dis = new DataInputStream(s.getInputStream() ) ;
+			DataOutputStream  dos = new DataOutputStream( s.getOutputStream() );
+			
+			boolean  flag2 = true ;
+			do{
+				String  clientWords = dis.readUTF();
+				System.out.println("客户端对服务器说：" + clientWords  );
+				if("bye".equals(clientWords)){
+					System.out.println("客户端" + s.getRemoteSocketAddress() + "掉线了" );
+					break;
+				}
+				System.out.println("'请输入服务器对客户端说的话：");
+				String  line = sc.nextLine() ;
+				
+				dos.writeUTF(line);
+				dos.flush();
+			}while(flag2);
+		}
+	}
+}
