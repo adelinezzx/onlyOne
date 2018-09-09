@@ -1,4 +1,4 @@
-功能分析:
+一、功能分析:
 1. 查询所有的客户.  ajax. 
 2. 日期由js组件完成.  My97DatePicker
 3. 订单编号由系统生成.     mybatis的  generated key. 
